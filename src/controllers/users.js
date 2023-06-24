@@ -12,10 +12,10 @@ const ConflictError = require('../errors/ConflictError');
 
 const User = require('../models/user');
 
-module.exports.login = (req, res, next) => {
+function login(req, res, next) {
   const { email, password } = req.body;
 
-  if (!REGEX_PASSWORD.test(password)) throw new BadRequestError('Пароль не соответствует регексу');
+  if (!REGEX_PASSWORD.test(password)) throw new BadRequestError('Введён некорректный пароль');
 
   User
     .findUserByCredentials(email, password)
@@ -28,15 +28,15 @@ module.exports.login = (req, res, next) => {
         );
         return res.send({ token });
       }
-      throw new AuthorizedError('401: неверная электронная почта или пароль');
+      throw new AuthorizedError('401: неверный e-mail или пароль');
     })
     .catch(next);
-};
+}
 
-module.exports.createUser = (req, res, next) => {
+function createUser(req, res, next) {
   const { email, password, name } = req.body;
 
-  if (!REGEX_PASSWORD.test(password)) throw new BadRequestError('Пароль не соответствует регексу');
+  if (!REGEX_PASSWORD.test(password)) throw new BadRequestError('Введён некорректный пароль');
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
@@ -50,9 +50,9 @@ module.exports.createUser = (req, res, next) => {
       else if (err.name === 'ValidationError') next(new BadRequestError('Неккоректные данные'));
       else next(err);
     });
-};
+}
 
-module.exports.getUserById = (req, res, next) => {
+function getUserById(req, res, next) {
   const { _id } = req.user;
 
   User
@@ -61,7 +61,7 @@ module.exports.getUserById = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new NotFoundError('Пользователь не найдет'));
+        return next(new NotFoundError('Пользователь не найден'));
       }
 
       if (err.name === 'DocumentNotFoundError') {
@@ -70,9 +70,9 @@ module.exports.getUserById = (req, res, next) => {
 
       return next(res);
     });
-};
+}
 
-module.exports.updateUser = (req, res, next) => {
+function updateUser(req, res, next) {
   const { name, email } = req.body;
   const { _id } = req.user;
   User.findByIdAndUpdate(
@@ -91,4 +91,11 @@ module.exports.updateUser = (req, res, next) => {
 
       return next(err);
     });
+}
+
+module.exports = {
+  updateUser,
+  getUserById,
+  createUser,
+  login,
 };
