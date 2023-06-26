@@ -2,6 +2,7 @@ const { compare } = require('bcryptjs');
 const mongoose = require('mongoose');
 const { REGEX_EMAIL } = require('../utils/regexData');
 const AuthorizedError = require('../errors/AuthorizedError');
+const { MESSAGE_INCORRECT_MAIL_PASSWORD } = require('../utils/constants');
 
 const { Schema } = mongoose;
 const userSchema = new Schema(
@@ -42,10 +43,10 @@ const userSchema = new Schema(
               return compare(password, user.password)
                 .then((matched) => {
                   if (matched) return user;
-                  return Promise.reject(new AuthorizedError('Неверно указаны e-mail или пароль'));
+                  return Promise.reject(new AuthorizedError(MESSAGE_INCORRECT_MAIL_PASSWORD));
                 });
             }
-            return Promise.reject(new AuthorizedError('Неверно указаны e-mail или пароль'));
+            return Promise.reject(new AuthorizedError(MESSAGE_INCORRECT_MAIL_PASSWORD));
           });
       },
     },

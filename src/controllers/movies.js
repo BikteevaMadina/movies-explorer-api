@@ -1,6 +1,13 @@
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const {
+  MESSAGE_ERROR_INCORRECT_DATA,
+  MESSAGE_ERROR_INCORRECT_ID,
+  MESSAGE_DELETED_FILM,
+  MESSAGE_ADD_FILM,
+  MESSAGE_ERROR_FILM_NOT_FOUND,
+} = require('../utils/constants');
 
 const Movie = require('../models/movie');
 
@@ -45,9 +52,9 @@ function createMovie(req, res, next) {
       owner: _id,
       movieId,
     })
-    .then(() => res.status(201).send({ message: 'Фильм добавлен' }))
+    .then(() => res.status(201).send({ message: MESSAGE_ADD_FILM }))
     .catch((err) => {
-      if (err.name === 'ValidationError') next(new BadRequestError('Неверные данные'));
+      if (err.name === 'ValidationError') next(new BadRequestError(MESSAGE_ERROR_INCORRECT_DATA));
       else next(err);
     });
 }
@@ -59,13 +66,13 @@ function deleteMovie(req, res, next) {
   Movie
     .findById(movieId)
     .then((movie) => {
-      if (!movie) throw new NotFoundError('Данные не найдены');
+      if (!movie) throw new NotFoundError(MESSAGE_ERROR_FILM_NOT_FOUND);
 
       const { owner: movieOwnerId } = movie;
-      if (movieOwnerId.valueOf() !== userId) throw new ForbiddenError('Нельзя удалить фильм другого пользователя');
+      if (movieOwnerId.valueOf() !== userId) throw new ForbiddenError(MESSAGE_ERROR_INCORRECT_ID);
 
       movie.deleteOne()
-        .then(() => res.send({ message: 'Фильм удалён' }))
+        .then(() => res.send({ message: MESSAGE_DELETED_FILM }))
         .catch(next);
     })
     .catch(next);
