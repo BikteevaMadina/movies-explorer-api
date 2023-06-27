@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { URL_REGEX } = require('../validation/movies');
+const validator = require('validator');
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -28,24 +28,45 @@ const movieSchema = new Schema(
     image: {
       type: String,
       validate: {
-        validator: (url) => URL_REGEX.test(url),
-        message: 'Введите URL-адрес',
+        validator(v) {
+          return validator.isURL(v, {
+            require_protocol: true,
+            require_valid_protocol: true,
+            require_host: true,
+          });
+        },
+        message: 'Введите корректную ссылку',
       },
+      required: [true, 'Поле обязательно к заполнению.'],
     },
 
     trailer: {
       type: String,
-      validate: {
-        validator: (url) => URL_REGEX.test(url),
-        message: 'Введите URL-адрес',
+      vvalidate: {
+        validator(v) {
+          return validator.isURL(v, {
+            require_protocol: true,
+            require_valid_protocol: true,
+            require_host: true,
+          });
+        },
+        message: 'Введите корректную ссылку',
       },
+      required: [true, 'Поле обязательно к заполнению.'],
     },
     thumbnail: {
       type: String,
       validate: {
-        validator: (url) => URL_REGEX.test(url),
-        message: 'Введите URL-адрес',
+        validator(v) {
+          return validator.isURL(v, {
+            require_protocol: true,
+            require_valid_protocol: true,
+            require_host: true,
+          });
+        },
+        message: 'Введите корректную ссылку',
       },
+      required: [true, 'Поле обязательно к заполнению.'],
     },
     nameRU: {
       required: true,
