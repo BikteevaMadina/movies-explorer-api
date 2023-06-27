@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { URL_REGEX } = require('../utils/regexData');
+const { URL_REGEX } = require('../validation/movies');
 
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
@@ -26,7 +26,6 @@ const movieSchema = new Schema(
       type: String,
     },
     image: {
-      required: true,
       type: String,
       validate: {
         validator: (url) => URL_REGEX.test(url),
@@ -35,7 +34,6 @@ const movieSchema = new Schema(
     },
 
     trailer: {
-      required: true,
       type: String,
       validate: {
         validator: (url) => URL_REGEX.test(url),
@@ -44,7 +42,6 @@ const movieSchema = new Schema(
     },
     thumbnail: {
       type: String,
-      required: true,
       validate: {
         validator: (url) => URL_REGEX.test(url),
         message: 'Введите URL-адрес',
