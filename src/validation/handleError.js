@@ -8,6 +8,7 @@ function handleError(error, request, response, next) {
       message: status === 500
         ? 'На сервере произошла ошибка'
         : message,
+      error,
     });
   next();
 }
