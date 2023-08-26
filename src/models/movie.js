@@ -42,7 +42,7 @@ const movieSchema = new Schema(
 
     trailer: {
       type: String,
-      vvalidate: {
+      validate: {
         validator(v) {
           return validator.isURL(v, {
             require_protocol: true,
