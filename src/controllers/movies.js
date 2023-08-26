@@ -17,14 +17,8 @@ function getMovies(req, res, next) {
   Movie
     .find({ owner: _id })
     .populate('owner', '_id')
-    .then((movies) => {
-      if (movies) return res.send(movies);
-      throw new NotFoundError(MESSAGE_ERROR_FILM_NOT_FOUND);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') next(new BadRequestError(MESSAGE_ERROR_INCORRECT_ID));
-      else next(err);
-    });
+    .then((movies) => res.send(movies.reverse()))
+    .catch(next);
 }
 
 function createMovie(req, res, next) {
